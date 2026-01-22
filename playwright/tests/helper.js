@@ -1,4 +1,5 @@
 import { request } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 const backendURL = "http://localhost:3004";
 const frontendURL = "http://localhost:5173";
@@ -58,7 +59,7 @@ const createBlog = async ({ page, title, author, url }) => {
   await page.getByRole("button", { name: /create/i }).click();
 
   const show = page.getByRole("button", { name: /show blogs/i });
-  if (await show.isVisible({ timeout: 30000 })) {
+  if (await show.isVisible()) {
     await show.click();
     await page.waitForTimeout(500);
   }
