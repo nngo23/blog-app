@@ -1,0 +1,45 @@
+name: "Periodic health check ping"
+
+on:
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: "0 0 * * * *" # every day at midnight UTC
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: perform HTTP request to deployed app
+        run: |
+          CODE=$(curl -s -L -o /dev/null -w "%{http_code}" https://new-blog-app.fly.dev)
+
+          echo "Returned status code: $CODE"
+
+          if [ "$CODE" -ne 200 ]; then
+            echo "Application is not reachable or returned an error"
+            exit 1
+          fi
+
+          echo "Application is healthy"
+
+      - name: Discord alert on failure
+        if: failure()
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+              "embeds": [
+                {
+                  "title": "Periodic health check failed",
+                  "description": "The application did not return HTTP 200 during the scheduled health check.\nEndpoint: https://new-blog-app.fly.dev",
+                  "footer": {
+                    "text": "Severity: error"
+                  },
+                  "color": 15158332
+                }
+              ]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
