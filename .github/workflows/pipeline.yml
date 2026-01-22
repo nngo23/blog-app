@@ -57,7 +57,7 @@ jobs:
         run: npx serve -s build -l 5173 &
 
       - name: Wait for backend to start
-        run: Start-Sleep -Seconds 10
+        run: sleep 10
 
       - name: Playwright tests
         working-directory: playwright
