@@ -1,26 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import nodePolyfills from "rollup-plugin-node-polyfills";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    nodePolyfills({
-      crypto: true,
-      buffer: true,
-      process: true,
-    }),
-  ],
-  define: {
-    global: "globalThis",
-  },
-  resolve: {
-    alias: {
-      buffer: "buffer",
-      process: "process/browser",
-    },
-  },
+  plugins: [react()],
   server: {
     proxy: {
       "/api": {
