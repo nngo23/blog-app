@@ -43,10 +43,6 @@ jobs:
           npm install
           npm run build
 
-      - name: Serve frontend for Playwright
-        working-directory: client
-        run: serve -s build -l 5173 &
-
       - name: setup Node.js 20 for Playwright
         uses: actions/setup-node@v5
         with:
@@ -55,6 +51,10 @@ jobs:
       - name: start backend in test mode
         working-directory: server
         run: npm run start:test &
+
+      - name: Serve frontend for Playwright
+        working-directory: client
+        run: serve -s build -l 5173 &
 
       - name: Wait for backend to start
         run: sleep 5
