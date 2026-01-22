@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseUrl = `http://localhost:${window.BACKEND_PORT || 3003}`;
+const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 let token = null;
 
