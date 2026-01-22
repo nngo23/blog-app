@@ -36,14 +36,13 @@ jobs:
         working-directory: server
         run: npm run start:test &
 
+      - run: echo "VITE_BACKEND_URL=http://localhost:3004" >> $GITHUB_ENV
+
       - name: Frontend install and build
         working-directory: client
         run: |
           npm install
           npm run build
-
-      - name: Set frontend backend URL (CI)
-        run: echo "VITE_BACKEND_URL=http://localhost:3004" >> $GITHUB_ENV
 
       - name: Serve frontend
         working-directory: client
