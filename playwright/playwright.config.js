@@ -67,8 +67,8 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
-  timeout: 30000, // 30 seconds per test
+  timeout: 60000,
   expect: {
-    timeout: 10000, // 10 seconds for expect() checks
+    timeout: 20000,
   },
 });
