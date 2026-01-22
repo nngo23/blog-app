@@ -61,22 +61,19 @@ const createBlog = async ({ page, title, author, url }) => {
   const show = page.getByRole("button", { name: /show blogs/i });
   if (await show.isVisible()) {
     await show.click();
-    await page.waitForTimeout(500);
   }
 
-  await expect(page.locator(".blog", { hasText: title })).toHaveCount(1, {
-    timeout: 30000,
-  });
+  const blogLocator = page.locator(".blog", { hasText: title });
+  await blogLocator.waitFor({ timeout: 30000 });
 
-  const blog = page.locator(".blog", { hasText: title }).first();
-  await expect(blog).toBeVisible();
+  await expect(blogLocator).toHaveCount(1, { timeout: 30000 });
 
-  const view = blog.getByRole("button", { name: /view/i });
+  const view = blogLocator.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {
     await view.click();
   }
 
-  return blog;
+  return blogLocator;
 };
 
 module.exports = {
