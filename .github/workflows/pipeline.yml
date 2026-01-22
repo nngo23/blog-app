@@ -43,12 +43,11 @@ jobs:
           npm install
           npm run build
 
-      - name: install wait-on
-        run: npm install -g wait-on serve
-
       - name: start backend in test mode
         working-directory: server
         run: npm run start:test &
+
+      - run: sleep 5
 
       - name: Serve frontend with Vite preview
         working-directory: client
@@ -57,8 +56,7 @@ jobs:
       - name: wait for backend
         run: npx wait-on http://localhost:3004
 
-      - name: wait for frontend
-        run: npx wait-on http://localhost:5173
+      - run: sleep 10
 
       - name: Playwright tests
         working-directory: playwright
