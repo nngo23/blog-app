@@ -1,7 +1,7 @@
-import { request } from "@playwright/test";
-import { expect } from "@playwright/test";
+import { request, expect } from "@playwright/test";
 
-const backendURL = "http://localhost:3004";
+const backendURL = process.env.VITE_BACKEND_URL || "http://localhost:3004";
+
 const frontendURL = "http://localhost:5173";
 
 const resetDatabase = async () => {
@@ -63,17 +63,17 @@ const createBlog = async ({ page, title, author, url }) => {
     await show.click();
   }
 
-  const blogLocator = page.locator(".blog", { hasText: title });
-  await blogLocator.waitFor({ timeout: 30000 });
+  const blogText = `${title} by ${author}`;
+  const blog = page.locator(".blog", { hasText: blogText }).first();
 
-  await expect(blogLocator).toHaveCount(1, { timeout: 30000 });
+  await expect(blog).toBeVisible({ timeout: 30000 });
 
-  const view = blogLocator.getByRole("button", { name: /view/i });
+  const view = blog.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {
     await view.click();
   }
 
-  return blogLocator;
+  return blog;
 };
 
 module.exports = {

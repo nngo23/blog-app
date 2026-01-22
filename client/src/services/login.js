@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseUrl = `http://localhost:${window.BACKEND_PORT || 3003}`;
+let baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 const login = async (credentials) => {
   const response = await axios.post(`${baseUrl}/api/login`, credentials);
