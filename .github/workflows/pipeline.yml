@@ -1,0 +1,114 @@
+name: "Deployment pipeline"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: backend install and test
+        working-directory: server
+        run: |
+          npm install
+          npm test
+
+      - name: Frontend install and build
+        working-directory: client
+        run: |
+          npm install
+          npm run build
+
+      - name: Playwright tests
+        working-directory: playwright
+        run: |
+          npm install
+          npx playwright install chromium
+          npx playwright test
+
+      - name: Setup flyctl
+        if: >
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ' '), '#skip')
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        if: >
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ' '), '#skip')
+        working-directory: server
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Discord alert on successful deployment
+        if: >
+          success() &&
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ' '), '#skip')
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [
+              {
+                "title": "A new version of **Blog** was deployed successfully",
+                "description": "to https://blog.fly.dev\n by ${{ github.actor }}",
+                "footer": {
+                  "text": "Severity: informational"
+                },
+                "color": 3066993
+              }
+            ]
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Discord alert on failed deployment
+        if: >
+          failure() &&
+          github.event_name == 'push' &&
+          !contains(join(github.event.commits.*.message, ' '), '#skip')
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [
+              {
+                "title": "Build failed",
+                "description": "commit **${{ github.sha }}** by ${{ github.actor }} failed to deploy to Fly.io.",
+                "footer": {
+                  "text": "Severity: error"
+                },
+                "color": 15158332
+              }
+            ]
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' &&
+      !contains(join(github.event.commits.*.message, ' '), '#skip')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.75.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: v
+          DEFAULT_BUMP: patch
