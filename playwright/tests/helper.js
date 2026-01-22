@@ -62,7 +62,7 @@ const createBlog = async ({ page, title, author, url }) => {
   if (await show.isVisible()) {
     await show.click();
   }
-
+  await page.reload({ waitUntil: "networkidle" });
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
