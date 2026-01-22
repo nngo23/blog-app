@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === "test") {
   app.use("/api/testing", testingRouter);
 }
 
-if (process.env.NODE_ENV === "test") {
+if (process.env.NODE_ENV === "test" && !process.env.JEST_WORKER_ID) {
   app.use(express.static(path.join(__dirname, "build")));
 
   app.get("*", (req, res) => {
