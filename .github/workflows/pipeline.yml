@@ -43,10 +43,14 @@ jobs:
           npm install
           npm run build
 
-      - name: Setup Node.js 20 for Playwright
+      - name: setup Node.js 20 for Playwright
         uses: actions/setup-node@v5
         with:
           node-version: 20
+
+      - name: start backend in test mode
+        working-directory: server
+        run: npm run start:test &
 
       - name: Playwright tests
         working-directory: playwright
