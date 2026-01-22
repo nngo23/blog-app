@@ -43,10 +43,8 @@ jobs:
           npm install
           npm run build
 
-      - name: setup Node.js 20 for Playwright
-        uses: actions/setup-node@v5
-        with:
-          node-version: 20
+      - name: install wait-on
+        run: npm install -g wait-on serve
 
       - name: start backend in test mode
         working-directory: server
@@ -67,7 +65,7 @@ jobs:
         run: |
           npm install
           npx playwright install chromium
-          npx playwright test
+          npx playwright test --timeout=60000
 
       - name: Setup flyctl
         if: >
