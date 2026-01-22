@@ -29,7 +29,6 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "build")));
 app.use(tokenExtractor);
 app.use(middleware.requestLogger);
 
@@ -42,10 +41,10 @@ if (process.env.NODE_ENV === "test") {
 }
 
 if (process.env.NODE_ENV !== "test") {
-  app.use(express.static(path.join(__dirname, "build")));
+  app.use(express.static(path.join(__dirname, "public")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
   });
 }
 
