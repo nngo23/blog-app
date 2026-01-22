@@ -121,10 +121,12 @@ jobs:
     if: >
       github.event_name == 'push' &&
       !contains(join(github.event.commits.*.message, ' '), '#skip')
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Bump version and push tag
+      - name: Bump version and tag
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
