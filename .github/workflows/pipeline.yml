@@ -61,7 +61,7 @@ jobs:
         if: >
           github.event_name == 'push' &&
           !contains(join(github.event.commits.*.message, ' '), '#skip')
-        uses: superfly/flyctl-actions/setup-flyctl@v0.0.33
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
         if: >
