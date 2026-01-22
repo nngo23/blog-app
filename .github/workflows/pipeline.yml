@@ -50,9 +50,9 @@ jobs:
         working-directory: server
         run: npm run start:test &
 
-      - name: serve frontend for Playwright
+      - name: Serve frontend with Vite preview
         working-directory: client
-        run: npx serve -s build -l 5173 &
+        run: npx vite preview --port 5173 &
 
       - name: wait for backend
         run: npx wait-on http://localhost:3004
