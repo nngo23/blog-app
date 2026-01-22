@@ -124,7 +124,7 @@ jobs:
               }
             ]
           }' \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ${{ secrets.DISCORD_WEBHOOK_UR}}
 
   tag_release:
     needs: [simple_deployment_pipeline]

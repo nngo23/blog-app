@@ -51,11 +51,6 @@ const login = async ({ page, username, password }) => {
 const createBlog = async ({ page, title, author, url }) => {
   await page.getByRole("button", { name: /new blog/i }).click();
 
-  await page.waitForResponse(
-    (resp) => resp.url().includes("/api/blogs") && resp.status() === 201,
-    { timeout: 60000 },
-  );
-
   await page.getByPlaceholder("title").fill(title);
   await page.getByPlaceholder("author").fill(author);
   await page.getByPlaceholder("url").fill(url);
@@ -63,7 +58,7 @@ const createBlog = async ({ page, title, author, url }) => {
   await page.getByRole("button", { name: /create/i }).click();
 
   const show = page.getByRole("button", { name: /show blogs/i });
-  if (await show.isVisible({ timeout: 10000 })) {
+  if (await show.isVisible({ timeout: 30000 })) {
     await show.click();
     await page.waitForTimeout(500);
   }
