@@ -4,12 +4,21 @@ import path from "path";
 import nodePolyfills from "rollup-plugin-node-polyfills";
 
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: path.join(__dirname, "..", "server", "build"),
-    emptyOutDir: true,
-    rollupOptions: {
-      plugins: [nodePolyfills()],
+  plugins: [
+    react(),
+    nodePolyfills({
+      crypto: true,
+      buffer: true,
+      process: true,
+    }),
+  ],
+  define: {
+    global: "globalThis",
+  },
+  resolve: {
+    alias: {
+      buffer: "buffer",
+      process: "process/browser",
     },
   },
   server: {
@@ -25,5 +34,9 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./testSetup.js",
+  },
+  build: {
+    outDir: path.join(__dirname, "..", "server", "build"),
+    emptyOutDir: true,
   },
 });

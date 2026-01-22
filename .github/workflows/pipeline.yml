@@ -30,13 +30,23 @@ jobs:
         working-directory: server
         run: |
           npm install
-          npm test
+          npm start:test
+
+      - name: setup Node.js 18 for frontend
+        uses: actions/setup-node@v5
+        with:
+          node-version: 18
 
       - name: Frontend install and build
         working-directory: client
         run: |
           npm install
           npm run build
+
+      - name: Setup Node.js 20 for Playwright
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
 
       - name: Playwright tests
         working-directory: playwright
