@@ -1,0 +1,12 @@
+# Ignore all files with the following file exrensions:
+*.png
+*.jpg
+*.doc
+*.docx
+*.txt
+*.test
+*.env
+
+# Ignoring the whole folder and all its content 
+/screen_captures
+/node_modules
