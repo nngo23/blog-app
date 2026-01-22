@@ -1,4 +1,4 @@
-app = "new-blog-app"
+app = "blog-app-2026"
 
 [env]
   PORT = "3003"

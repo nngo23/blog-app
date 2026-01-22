@@ -6,7 +6,7 @@ on:
       - main
 
   schedule:
-    - cron: "0 0 * * * *" # every day at midnight UTC
+    - cron: "0 0 * * *" # every day at midnight UTC
 
 jobs:
   health_check:
@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: perform HTTP request to deployed app
         run: |
-          CODE=$(curl -s -L -o /dev/null -w "%{http_code}" https://new-blog-app.fly.dev)
+          CODE=$(curl -s -L -o /dev/null -w "%{http_code}" https://blog-app-2026.fly.dev)
 
           echo "Returned status code: $CODE"
 
@@ -34,7 +34,7 @@ jobs:
               "embeds": [
                 {
                   "title": "Periodic health check failed",
-                  "description": "The application did not return HTTP 200 during the scheduled health check.\nEndpoint: https://new-blog-app.fly.dev",
+                  "description": "The application did not return HTTP 200 during the scheduled health check.\nEndpoint: https://blog-app-2026.fly.dev",
                   "footer": {
                     "text": "Severity: error"
                   },
