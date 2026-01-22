@@ -47,7 +47,6 @@ jobs:
       - name: Serve frontend
         working-directory: client
         run: npx vite preview --port 5173 &
-
       - run: sleep 5
 
       - name: Playwright tests
