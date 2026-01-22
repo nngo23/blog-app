@@ -64,7 +64,9 @@ const createBlog = async ({ page, title, author, url }) => {
     await page.waitForTimeout(500);
   }
 
-  await page.locator(".blog").first().waitFor({ timeout: 30000 });
+  await expect(page.locator(".blog", { hasText: title })).toHaveCount(1, {
+    timeout: 30000,
+  });
 
   const blog = page.locator(".blog", { hasText: title }).first();
   await expect(blog).toBeVisible();
