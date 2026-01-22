@@ -50,13 +50,13 @@ jobs:
       - name: Wait for backend
         run: |
           for i in {1..30}; do
-            if curl -s http://localhost:3004/health; then
-              echo "Backend is up"
+            if curl -s http://localhost:3004/api/blogs; then
+              echo "Backend API is up"
               exit 0
             fi
             sleep 1
           done
-          echo "Backend failed to start"
+          echo "Backend API failed to start"
           exit 1
 
       - name: Serve frontend with Vite preview
