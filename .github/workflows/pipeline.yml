@@ -50,6 +50,12 @@ jobs:
 
       - run: sleep 5
 
+      - name: Check environment
+        run: |
+          echo "NODE_ENV = $NODE_ENV"
+          echo "TEST_PORT = $TEST_PORT"
+          echo "VITE_BACKEND_URL = $VITE_BACKEND_URL"
+
       - name: Playwright tests
         working-directory: playwright
         run: |
