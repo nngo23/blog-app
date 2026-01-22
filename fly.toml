@@ -1,19 +1,22 @@
 app = "blog-app-2026"
 
 [env]
-  PORT = "3003"
+PORT = "3003"
 
 [deploy]
-  strategy = "canary"
+strategy = "canary"
 
 [http_service]
-  internal_port = 3003
-  force_https = true
+internal_port = 3003
+min_machines_running = 1
+force_https = true
+auto_start_machines = true
+auto_stop_machines = true
 
-  [[http_service.http_checks]]
-    path = "/health"
-    protocol = "http"
-    method = "GET"
-    grace_period = "5s"
-    interval = "10s"
-    timeout = "2s"
+[[http_service.http_checks]]
+path = "/health"
+protocol = "http"
+method = "GET"
+grace_period = "5s"
+interval = "10s"
+timeout = "2s"

@@ -1,4 +1,4 @@
-import { request, expect } from "@playwright/test";
+import { request } from "@playwright/test";
 
 const backendURL = process.env.VITE_BACKEND_URL || "http://localhost:3004";
 
@@ -66,7 +66,7 @@ const createBlog = async ({ page, title, author, url }) => {
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
-  await expect(blog).toBeVisible({ timeout: 30000 });
+  await blog.waitFor({ state: "visible", timeout: 10000 });
 
   const view = blog.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {
