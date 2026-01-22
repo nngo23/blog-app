@@ -4,8 +4,6 @@ const backendURL = process.env.VITE_BACKEND_URL || "http://localhost:3004";
 
 const frontendURL = "http://localhost:5173";
 
-console.log("Using backendURL:", backendURL);
-
 const resetDatabase = async () => {
   const api = await request.newContext({ baseURL: backendURL });
 
@@ -47,7 +45,7 @@ const login = async ({ page, username, password }) => {
   await page.addInitScript((value) => {
     window.localStorage.setItem("loggedBlogappUser", value);
   }, JSON.stringify(user));
-  page.on("console", (msg) => console.log("BROWSER LOG:", msg.text()));
+
   await page.goto(frontendURL);
 };
 
