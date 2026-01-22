@@ -30,7 +30,7 @@ jobs:
         working-directory: server
         run: |
           npm install
-          npm start:test
+          npm run start:test
 
       - name: setup Node.js 18 for frontend
         uses: actions/setup-node@v5
