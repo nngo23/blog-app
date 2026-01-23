@@ -1,6 +1,6 @@
 import { request } from "@playwright/test";
 
-const backendURL = process.env.VITE_BACKEND_URL || "http://localhost:3004";
+const backendURL = "http://localhost:3004";
 
 const frontendURL = "http://localhost:5173";
 
