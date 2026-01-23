@@ -1,9 +1,9 @@
 import axios from "axios";
 
-let baseUrl = `http://localhost:${window.BACKEND_PORT || 3003}`;
+let baseUrl = "/api";
 
 const login = async (credentials) => {
-  const response = await axios.post(`${baseUrl}/api/login`, credentials);
+  const response = await axios.post(`${baseUrl}/login`, credentials);
   return response.data;
 };
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseUrl = `http://localhost:${window.BACKEND_PORT || 3003}`;
+let baseUrl = "/api";
 
 let token = null;
 
@@ -9,12 +9,12 @@ const setToken = (newToken) => {
 };
 
 const getAll = async () => {
-  const response = await fetch(`${baseUrl}/api/blogs`);
+  const response = await fetch(`${baseUrl}/blogs`);
   return response.json();
 };
 
 const create = async (newBlog) => {
-  const res = await fetch(`${baseUrl}/api/blogs`, {
+  const res = await fetch(`${baseUrl}/blogs`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -26,13 +26,13 @@ const create = async (newBlog) => {
 };
 
 const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/api/blogs/${id}`, newObject);
+  const request = axios.put(`${baseUrl}/blogs/${id}`, newObject);
   return request.then((response) => response.data);
 };
 
 const remove = async (id) => {
   const config = { headers: { Authorization: token } };
-  const response = await axios.delete(`${baseUrl}/api/blogs/${id}`, config);
+  const response = await axios.delete(`${baseUrl}/blogs/${id}`, config);
   return response.data;
 };
 

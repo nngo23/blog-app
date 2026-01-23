@@ -19,7 +19,7 @@ export default defineConfig({
     setupFiles: "./testSetup.js",
   },
   build: {
-    outDir: path.join(__dirname, "..", "server", "build"),
+    outDir: path.join(__dirname, "..", "server", "public"),
     emptyOutDir: true,
   },
 });
