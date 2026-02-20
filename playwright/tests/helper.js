@@ -45,7 +45,14 @@ const login = async ({ page, username, password }) => {
     window.localStorage.setItem("loggedBlogappUser", value);
   }, JSON.stringify(user));
 
-  await page.goto(frontendURL);
+  for (let i = 0; i < 20; i++) {
+    try {
+      await page.goto(frontendURL);
+      break;
+    } catch {
+      await page.waitForTimeout(1000);
+    }
+  }
 };
 
 const createBlog = async ({ page, title, author, url }) => {
@@ -65,7 +72,14 @@ const createBlog = async ({ page, title, author, url }) => {
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
-  await blog.waitFor({ state: "visible", timeout: 20000 });
+  for (let i = 0; i < 8; i++) {
+    try {
+      await blog.waitFor({ state: "visible", timeout: 5000 });
+      break;
+    } catch {
+      await page.waitForTimeout(3000);
+    }
+  }
 
   const view = blog.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {
