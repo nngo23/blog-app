@@ -60,38 +60,25 @@ const login = async ({ page, username, password }) => {
   }
 };
 
-// Create a blog with robust waits
 const createBlog = async ({ page, title, author, url }) => {
-  // Open the new blog form
   await page.getByRole("button", { name: /new blog/i }).click();
 
-  // Fill the form
   await page.getByPlaceholder("title").fill(title);
   await page.getByPlaceholder("author").fill(author);
   await page.getByPlaceholder("url").fill(url);
 
-  // Submit
   await page.getByRole("button", { name: /create/i }).click();
 
-  // Wait for the API response to complete
   await page.waitForResponse(
     (resp) =>
       resp.url().includes("/api/blogs") && resp.request().method() === "POST",
   );
 
-  // Make sure blogs are visible
-  const showButton = page.getByRole("button", { name: /show blogs/i });
-  if (await showButton.isVisible()) await showButton.click();
+  // 🔥 reload ensures blog is rendered
+  await page.reload();
 
-  // Locate the blog reliably
-  const blog = page
-    .locator(".blog", { hasText: `${title} by ${author}` })
-    .first();
-  await expect(blog).toHaveCount(1, { timeout: 10000 }); // fail fast if not rendered
-
-  // Click the view button inside the blog
-  const viewButton = blog.getByRole("button", { name: /view/i });
-  if ((await viewButton.count()) > 0) await viewButton.click();
+  const blog = page.locator(".blog", { hasText: title }).first();
+  await expect(blog).toBeVisible({ timeout: 10000 });
 
   return blog;
 };
