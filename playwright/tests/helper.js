@@ -72,19 +72,35 @@ const createBlog = async ({ page, title, author, url }) => {
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 10; i++) {
     if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
     try {
-      await blog.waitFor({ state: "visible", timeout: 5000 });
+      await blog.waitFor({ state: "visible", timeout: 6000 });
+      console.log(`Blog visible on attempt ${i + 1}`);
       break;
     } catch {
+      console.log(`Attempt ${i + 1}: blog not visible yet, waiting...`);
       await page.waitForTimeout(3000);
     }
   }
 
   const view = blog.getByRole("button", { name: /view/i });
+  try {
+    await view.waitFor({ state: "visible", timeout: 10000 });
+    await view.click();
+  } catch {
+    console.log("View button not visible yet, continuing...");
+  }
   if (await view.isVisible()) {
     await view.click();
+  }
+
+  const likes = blog.getByText(/likes \d+/i);
+  try {
+    await likes.waitFor({ state: "visible", timeout: 20000 });
+  } catch {
+    console.log("Blog HTML when likes not found:\n", await blog.innerHTML());
+    throw new Error(`Likes counter did not appear for blog "${blogText}"`);
   }
 
   return blog;
