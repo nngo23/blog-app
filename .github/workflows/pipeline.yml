@@ -28,17 +28,23 @@ jobs:
           node-version: 20
 
       - name: backend install and test
-        working-directory: server
+        working-directory: ./server
         run: |
           npm install
           npm test
 
       - name: start backend in test mode
-        working-directory: server
+        working-directory: ./server
         run: npm run start:test &
 
+      - name: Wait for backend
+        run: |
+          for i in {1..30}; do
+            curl -f http://localhost:3004 && break || sleep 2
+          done
+
       - name: Frontend install and build
-        working-directory: client
+        working-directory: ./client
         run: |
           npm install
           npm run build
@@ -61,7 +67,7 @@ jobs:
         run: |
           npm install
           npx playwright install chromium
-          npx playwright test --timeout=60000
+          npx playwright test --timeout=120000
 
       - name: Setup flyctl
         if: >

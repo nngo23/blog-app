@@ -73,6 +73,7 @@ const createBlog = async ({ page, title, author, url }) => {
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
   for (let i = 0; i < 8; i++) {
+    if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
     try {
       await blog.waitFor({ state: "visible", timeout: 5000 });
       break;
