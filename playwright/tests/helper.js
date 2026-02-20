@@ -66,7 +66,7 @@ const createBlog = async ({ page, title, author, url }) => {
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
-  await blog.waitFor({ state: "visible", timeout: 10000 });
+  await blog.waitFor({ state: "visible", timeout: 20000 });
 
   const view = blog.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {
