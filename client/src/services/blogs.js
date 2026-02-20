@@ -9,12 +9,12 @@ const setToken = (newToken) => {
 };
 
 const getAll = async () => {
-  const response = await fetch(`${baseUrl}/blogs`);
+  const response = await fetch(`${baseUrl}`);
   return response.json();
 };
 
 const create = async (newBlog) => {
-  const res = await fetch(`${baseUrl}/blogs`, {
+  const res = await fetch(`${baseUrl}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -26,13 +26,13 @@ const create = async (newBlog) => {
 };
 
 const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/blogs/${id}`, newObject);
+  const request = axios.put(`${baseUrl}/${id}`, newObject);
   return request.then((response) => response.data);
 };
 
 const remove = async (id) => {
   const config = { headers: { Authorization: token } };
-  const response = await axios.delete(`${baseUrl}/blogs/${id}`, config);
+  const response = await axios.delete(`${baseUrl}/${id}`, config);
   return response.data;
 };
 
