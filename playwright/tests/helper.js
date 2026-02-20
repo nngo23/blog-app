@@ -62,24 +62,37 @@ const login = async ({ page, username, password }) => {
 
 const createBlog = async ({ page, title, author, url }) => {
   await page.getByRole("button", { name: /new blog/i }).click();
-
   await page.getByPlaceholder("title").fill(title);
   await page.getByPlaceholder("author").fill(author);
   await page.getByPlaceholder("url").fill(url);
-
   await page.getByRole("button", { name: /create/i }).click();
-
-  await page.waitForResponse(
-    (resp) =>
-      resp.url().includes("/api/blogs") && resp.request().method() === "POST",
-  );
-
-  // 🔥 reload ensures blog is rendered
-  await page.reload();
-
-  const blog = page.locator(".blog", { hasText: title }).first();
-  await expect(blog).toBeVisible({ timeout: 10000 });
-
+  const show = page.getByRole("button", { name: /show blogs/i });
+  if (await show.isVisible()) {
+    await show.click();
+  }
+  const blogText = `${title} by ${author}`;
+  const blog = page.locator(".blog", { hasText: blogText }).first();
+  for (let i = 0; i < 8; i++) {
+    if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
+    try {
+      await blog.waitFor({ state: "visible", timeout: 5000 });
+      break;
+    } catch {
+      await page.waitForTimeout(3000);
+    }
+  }
+  const view = blog.getByRole("button", { name: /view/i });
+  if (await view.isVisible()) {
+    await view.click();
+  }
+  const likes = blog.getByText(/likes \d+/i);
+  try {
+    await likes.waitFor({ state: "visible", timeout: 20000 });
+  } catch {
+    // Log blog HTML for debugging if likes never appear
+    console.log("Blog HTML when likes not found:\n", await blog.innerHTML());
+    throw new Error(`Likes counter did not appear for blog "${blogText}"`);
+  }
   return blog;
 };
 
