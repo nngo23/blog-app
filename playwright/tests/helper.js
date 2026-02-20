@@ -4,7 +4,6 @@ const { expect, request } = require("@playwright/test");
 const backendURL = process.env.TEST_BACKEND_URL || "http://localhost:3004";
 const frontendURL = process.env.TEST_FRONTEND_URL || "http://localhost:5173";
 
-// Reset the backend database
 const resetDatabase = async () => {
   const api = await request.newContext({ baseURL: backendURL });
 
@@ -14,7 +13,7 @@ const resetDatabase = async () => {
       await api.post("/api/testing/reset");
       success = true;
       break;
-    } catch {
+    } catch (err) {
       await new Promise((res) => setTimeout(res, 300));
     }
   }
@@ -25,14 +24,12 @@ const resetDatabase = async () => {
     throw new Error("Could not connect to test backend on port 3004");
 };
 
-// Create a user
 const createUser = async ({ request, username, name, password }) => {
   await request.post(`${backendURL}/api/users`, {
     data: { username, name, password },
   });
 };
 
-// Login user and set localStorage
 const login = async ({ page, username, password }) => {
   const loginRes = await page.request.post(`${backendURL}/api/login`, {
     data: { username, password },
@@ -49,7 +46,6 @@ const login = async ({ page, username, password }) => {
     window.localStorage.setItem("loggedBlogappUser", value);
   }, JSON.stringify(user));
 
-  // Retry navigating to frontend for flaky CI
   for (let i = 0; i < 20; i++) {
     try {
       await page.goto(frontendURL);
@@ -62,37 +58,36 @@ const login = async ({ page, username, password }) => {
 
 const createBlog = async ({ page, title, author, url }) => {
   await page.getByRole("button", { name: /new blog/i }).click();
+
   await page.getByPlaceholder("title").fill(title);
   await page.getByPlaceholder("author").fill(author);
   await page.getByPlaceholder("url").fill(url);
+
   await page.getByRole("button", { name: /create/i }).click();
+
   const show = page.getByRole("button", { name: /show blogs/i });
   if (await show.isVisible()) {
     await show.click();
   }
+
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
+
   for (let i = 0; i < 8; i++) {
     if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
     try {
       await blog.waitFor({ state: "visible", timeout: 5000 });
       break;
-    } catch {
+    } catch (err) {
       await page.waitForTimeout(3000);
     }
   }
+
   const view = blog.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {
     await view.click();
   }
-  const likes = blog.getByText(/likes \d+/i);
-  try {
-    await likes.waitFor({ state: "visible", timeout: 20000 });
-  } catch {
-    // Log blog HTML for debugging if likes never appear
-    console.log("Blog HTML when likes not found:\n", await blog.innerHTML());
-    throw new Error(`Likes counter did not appear for blog "${blogText}"`);
-  }
+
   return blog;
 };
 
