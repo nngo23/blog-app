@@ -62,9 +62,10 @@ const login = async ({ page, username, password }) => {
 
 // Create a blog with robust waits
 const createBlog = async ({ page, title, author, url }) => {
+  // Open the new blog form
   await page.getByRole("button", { name: /new blog/i }).click();
 
-  // Fill blog form
+  // Fill the form
   await page.getByPlaceholder("title").fill(title);
   await page.getByPlaceholder("author").fill(author);
   await page.getByPlaceholder("url").fill(url);
@@ -72,28 +73,25 @@ const createBlog = async ({ page, title, author, url }) => {
   // Submit
   await page.getByRole("button", { name: /create/i }).click();
 
-  // Show blogs if needed
-  const show = page.getByRole("button", { name: /show blogs/i });
-  if (await show.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await show.click();
-  }
+  // Wait for the API response to complete
+  await page.waitForResponse(
+    (resp) =>
+      resp.url().includes("/api/blogs") && resp.request().method() === "POST",
+  );
 
-  const blogText = `${title} by ${author}`;
-  const blog = page.locator(".blog", { hasText: blogText }).first();
+  // Make sure blogs are visible
+  const showButton = page.getByRole("button", { name: /show blogs/i });
+  if (await showButton.isVisible()) await showButton.click();
 
-  // Wait for the blog to appear
-  await expect(blog).toHaveCount(1, { timeout: 30000 });
+  // Locate the blog reliably
+  const blog = page
+    .locator(".blog", { hasText: `${title} by ${author}` })
+    .first();
+  await expect(blog).toHaveCount(1, { timeout: 10000 }); // fail fast if not rendered
 
-  // Wait for the "view" button and click
+  // Click the view button inside the blog
   const viewButton = blog.getByRole("button", { name: /view/i });
-  if ((await viewButton.count()) > 0) {
-    await expect(viewButton.first()).toBeVisible({ timeout: 10000 });
-    await viewButton.first().click();
-  }
-
-  // Wait for likes counter
-  const likes = blog.getByText(/likes \d+/i);
-  await expect(likes).toBeVisible({ timeout: 15000 });
+  if ((await viewButton.count()) > 0) await viewButton.click();
 
   return blog;
 };
