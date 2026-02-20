@@ -1,8 +1,7 @@
 import { request } from "@playwright/test";
 
-const backendURL = "http://localhost:3004";
-
-const frontendURL = "http://localhost:5173";
+const backendURL = process.env.TEST_BACKEND_URL || "http://localhost:3004";
+const frontendURL = process.env.TEST_FRONTEND_URL || "http://localhost:5173";
 
 const resetDatabase = async () => {
   const api = await request.newContext({ baseURL: backendURL });

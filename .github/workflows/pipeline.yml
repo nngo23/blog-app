@@ -54,6 +54,9 @@ jobs:
           npm install
           npx playwright install chromium
           npx playwright test --timeout=60000
+        env:
+          TEST_BACKEND_URL: "http://localhost:3004"
+          TEST_FRONTEND_URL: "http://localhost:5173"
 
       - name: Setup flyctl
         if: >
