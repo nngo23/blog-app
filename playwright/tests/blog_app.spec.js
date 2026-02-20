@@ -1,3 +1,4 @@
+// blog_app.spec.js
 const { test, expect } = require("@playwright/test");
 const {
   frontendURL,
@@ -35,12 +36,16 @@ test.describe("Blog application", () => {
 
   test("when logged in, can create a new blog", async ({ page }) => {
     await login({ page, username: "helminguyen", password: "password" });
-    await createBlog({
+    const blog = await createBlog({
       page,
       title: "Beauty blog",
       author: "Author A",
       url: "http://www.beautyblog.fi",
     });
+
+    // Confirm blog is visible
+    await expect(blog).toBeVisible();
+    await expect(blog.getByText(/likes \d+/i)).toBeVisible();
   });
 
   test("when logged in, a blog can be liked", async ({ page }) => {
@@ -53,16 +58,13 @@ test.describe("Blog application", () => {
       url: "http://www.travelblog.fi",
     });
 
-    const likes = blog.locator("text=/likes \\d+/i");
-
     const likeButton = blog.getByRole("button", { name: /like/i });
+    await expect(likeButton).toBeVisible({ timeout: 10000 });
+
+    // Click like and check counter increments
     await likeButton.click();
 
-    // Wait until likes updated
-    await expect
-      .poll(async () => await likes.textContent().catch(() => ""), {
-        timeout: 15000,
-      })
-      .toMatch(/likes 1/);
+    const likesCounter = blog.getByText(/likes 1/i);
+    await expect(likesCounter).toBeVisible({ timeout: 10000 });
   });
 });
