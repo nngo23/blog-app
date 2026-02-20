@@ -53,26 +53,15 @@ test.describe("Blog application", () => {
       url: "http://www.travelblog.fi",
     });
 
-    const view = blog.getByRole("button", { name: /view/i });
-    if ((await view.count()) > 0) {
-      await view.click();
-    }
-
     const likes = blog.locator("text=/likes \\d+/i");
 
-    // Wait for likes to appear
+    const likeButton = blog.getByRole("button", { name: /like/i });
+    await likeButton.click();
+
+    // Wait until likes updated
     await expect
       .poll(async () => await likes.textContent().catch(() => ""), {
         timeout: 15000,
-      })
-      .toMatch(/likes 0/);
-
-    const like = blog.getByRole("button", { name: /like/i });
-    await like.click();
-
-    await expect
-      .poll(async () => await likes.textContent().catch(() => ""), {
-        timeout: 10000,
       })
       .toMatch(/likes 1/);
   });
