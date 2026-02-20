@@ -1,48 +1,76 @@
 ## Blog application (Live)
 
-This Blog application allows users to browse, create, and like blogs in an easy-to-use interface.
-The project is based on Full Stack Open – Parts 4 and 5 and showcases a complete full-stack solution with authentication, database storage, and interactive UI behavior.
+Blog App is a full-stack web application that allows users to register, log in, create blogs, like posts, and delete their own blogs. Blogs are dynamically sorted by the number of likes, making popular content easy to discover. All data is stored in a backend database, and user authentication is handled securely using JSON Web Tokens (JWT).
 
 ## Live site:
 
 👉 https://blog-app-2026.fly.dev
 
-## What you can do
+## What the project does
 
-📚 Browse blogs
+User authentication (register & login)
+Create, view, like, and delete blogs
+Blogs sorted by popularity (likes)
+Role-based permissions (only creators can delete their blogs)
+Persistent data storage in a database
+Automated backend and end-to-end tests
+Continuous integration and deployment
 
-    View a list of blogs created by different users.
+## How to run the project locally
 
-    Blogs are displayed in descending order by likes.
+1. Clone the repository:
 
-    Each blog includes:
+```bash
+git clone https://github.com/nngo23/blog-app
+cd blog-app
+```
 
-        Title
+2. Install backend dependencies:
 
-        Author
+```bash
+cd backend
+npm install
+```
 
-        Link to the original blog
+Create a **.env** file with:
 
-❤️ Like blogs
+MONGODB_URI=<your-mongodb-uri>
+SECRET=<your-jwt-secret>
 
-    Click the like button to increase a blog’s popularity.
+Start backend:
+npm run dev
 
-    Like counts update immediately.
+Frontend runs on: http://localhost:5173
 
-✍️ Create blogs
+## Technologies used
 
-    Logged-in users can add new blogs by providing:
+1. Frontend
+   React
+   Vite
+   Axios
+   CSS
+2. Backend
+   Node.js
+   Express
+   MongoDB
+   Mongoose
+   JSON Web Token (JWT)
+   bcrypt
+3. Testing
+   Jest (backend testing)
+   Playwright (end-to-end testing)
+4. DevOps & Deployment
+   GitHub Actions (CI/CD)
+   Fly.io (deployment)
 
-    Blog title
+## My contribution
 
-    Author name
+This is my first project where I handled the entire development lifecycle independently:
 
-    Blog URL
-
-    New blogs appear in the blog list instantly.
-
-🗑 Delete your own blogs
-
-    Users can remove blogs they have created.
-
-    Blogs created by other users cannot be deleted.
+    Designed and implemented the backend REST API
+    Built the React frontend and managed state
+    Implemented authentication and authorization logic
+    Wrote unit tests and end-to-end tests
+    Configured CI/CD pipelines in GitHub Actions
+    Managed environment variables and deployment to Fly.io
+    Debugged production and CI environment issues
