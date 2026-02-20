@@ -74,3 +74,5 @@ This is my first project where I handled the entire development lifecycle indepe
     Configured CI/CD pipelines in GitHub Actions
     Managed environment variables and deployment to Fly.io
     Debugged production and CI environment issues
+
+In other projects, I contributed to specific parts only. This project represents my first complete end-to-end full-stack implementation, from development to live production deployment.
