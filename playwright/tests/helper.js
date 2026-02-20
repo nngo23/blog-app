@@ -58,51 +58,54 @@ const login = async ({ page, username, password }) => {
 const createBlog = async ({ page, title, author, url }) => {
   await page.getByRole("button", { name: /new blog/i }).click();
 
+  // Fill blog form
   await page.getByPlaceholder("title").fill(title);
   await page.getByPlaceholder("author").fill(author);
   await page.getByPlaceholder("url").fill(url);
 
+  // Submit
   await page.getByRole("button", { name: /create/i }).click();
 
+  // Show blogs if needed
   const show = page.getByRole("button", { name: /show blogs/i });
-  if (await show.isVisible()) {
-    await show.click();
-  }
+  if (await show.isVisible()) await show.click();
 
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
+  // Wait for the blog to appear with retries
   for (let i = 0; i < 10; i++) {
     if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
-    try {
-      await blog.waitFor({ state: "visible", timeout: 6000 });
+
+    if (await blog.isVisible({ timeout: 3000 }).catch(() => false)) {
       console.log(`Blog visible on attempt ${i + 1}`);
       break;
-    } catch {
-      console.log(`Attempt ${i + 1}: blog not visible yet, waiting...`);
-      await page.waitForTimeout(3000);
     }
+    console.log(`Attempt ${i + 1}: blog not visible yet, waiting...`);
+    await page.waitForTimeout(2000);
   }
 
+  // Wait for the "view" button reliably
   const view = blog.getByRole("button", { name: /view/i });
-  try {
-    await view.waitFor({ state: "visible", timeout: 10000 });
-    await view.click();
-  } catch {
-    console.log("View button not visible yet, continuing...");
-  }
-  if (await view.isVisible()) {
+  if (await view.isVisible({ timeout: 5000 }).catch(() => false)) {
     await view.click();
   }
 
+  // Wait for likes counter
   const likes = blog.getByText(/likes \d+/i);
-  try {
-    await likes.waitFor({ state: "visible", timeout: 20000 });
-  } catch {
-    console.log("Blog HTML when likes not found:\n", await blog.innerHTML());
-    throw new Error(`Likes counter did not appear for blog "${blogText}"`);
+  for (let i = 0; i < 10; i++) {
+    if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
+
+    if (await likes.isVisible({ timeout: 2000 }).catch(() => false)) {
+      console.log(`Likes counter visible for blog "${blogText}"`);
+      break;
+    }
+
+    console.log(`Attempt ${i + 1}: likes not visible yet, waiting...`);
+    await page.waitForTimeout(2000);
   }
 
+  // Return the blog locator
   return blog;
 };
 
