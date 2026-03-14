@@ -1,71 +1,78 @@
-## Blog App (live version)
+## Blog application (Live)
 
-Welcome to the Blog App, a modern blogging platform where you can read, create, and like blogs. This app is part of the Full Stack Open course (Parts 4 & 5) and demonstrates a simple yet fully functional blogging experience.
+Blog App is a full-stack web application that allows users to register, log in, create blogs, like posts, and delete their own blogs. Blogs are dynamically sorted by the number of likes, making popular content easy to discover. All data is stored in a backend database, and user authentication is handled securely using JSON Web Tokens (JWT).
 
-## Live demo: https://blog-app-2026.fly.dev
+## Live site:
 
-## Features
+👉 https://blog-app-2026.fly.dev
 
-View blogs
+## What the project does
 
-    Browse a list of blogs created by registered users.
+User authentication (register & login)
+Create, view, like, and delete blogs
+Blogs sorted by popularity (likes)
+Role-based permissions (only creators can delete their blogs)
+Persistent data storage in a database
+Automated backend and end-to-end tests
+Continuous integration and deployment
 
-    Blogs are sorted by the number of likes.
+## How to run the project locally
 
-Like blogs
+1. Clone the repository:
 
-    Click the “like” button to increase a blog’s popularity.
+```bash
+git clone https://github.com/nngo23/blog-app
+cd blog-app
+```
 
-    Likes are updated in real-time.
+2. Install backend dependencies:
 
-Create new blogs
+```bash
+cd backend
+npm install
+```
 
-    Logged-in users can add new blogs by entering the title, author, and URL.
+Create a **.env** file with:
 
-    Newly created blogs appear at the top of the list.
+MONGODB_URI=<your-mongodb-uri>
+SECRET=<your-jwt-secret>
 
-Author links
+Start backend:
+npm run dev
 
-    Each blog shows its author.
+Frontend runs on: http://localhost:5173
 
-    Click the blog title or URL to visit the original source.
+## Technologies used
 
-Delete blogs
+1. Frontend
+   React
+   Vite
+   Axios
+   CSS
+2. Backend
+   Node.js
+   Express
+   MongoDB
+   Mongoose
+   JSON Web Token (JWT)
+   bcrypt
+3. Testing
+   Jest (backend testing)
+   Playwright (end-to-end testing)
+4. DevOps & Deployment
+   GitHub Actions (CI/CD)
+   Fly.io (deployment)
 
-    Users can delete their own blogs.
+## My contribution
 
-    Only the creator of a blog can delete it.
+This is my first project where I handled the entire development lifecycle independently:
 
-You can like any blog, and the likes count will increase immediately.
+    Designed and implemented the backend REST API
+    Built the React frontend and managed state
+    Implemented authentication and authorization logic
+    Wrote unit tests and end-to-end tests
+    Configured CI/CD pipelines in GitHub Actions
+    Managed environment variables and deployment to Fly.io
+    Debugged production and CI environment issues
 
-## How to Use
-
-    Visit the app: https://blog-app-2026.fly.dev
-
-    Login/Register
-
-    Register a new account or login with your credentials.
-
-    View Blogs
-
-    Browse the list of blogs sorted by popularity (likes).
-
-    Add a Blog
-
-    Click “Create New Blog”, fill in the title, author, and URL, and submit.
-
-    Like a Blog
-
-    Click the “like” button to increase the likes for a blog.
-
-    Delete a Blog
-
-    Click “remove” on your own blogs to delete them.
-
-## Notes
-
-    Blogs created by other users cannot be deleted by you.
-
-    You must be logged in to create or like blogs.
-
-    Likes are persistent and stored in the backend database.
+In other projects, I contributed to specific parts only. This project represents my first complete end-to-end full-stack implementation, from development to live production deployment.

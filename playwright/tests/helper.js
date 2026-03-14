@@ -1,8 +1,8 @@
-import { request } from "@playwright/test";
+// helper.js
+const { expect, request } = require("@playwright/test");
 
-const backendURL = "http://localhost:3004";
-
-const frontendURL = "http://localhost:5173";
+const backendURL = process.env.TEST_BACKEND_URL || "http://localhost:3004";
+const frontendURL = process.env.TEST_FRONTEND_URL || "http://localhost:5173";
 
 const resetDatabase = async () => {
   const api = await request.newContext({ baseURL: backendURL });
@@ -46,7 +46,14 @@ const login = async ({ page, username, password }) => {
     window.localStorage.setItem("loggedBlogappUser", value);
   }, JSON.stringify(user));
 
-  await page.goto(frontendURL);
+  for (let i = 0; i < 20; i++) {
+    try {
+      await page.goto(frontendURL);
+      break;
+    } catch {
+      await page.waitForTimeout(1000);
+    }
+  }
 };
 
 const createBlog = async ({ page, title, author, url }) => {
@@ -66,7 +73,15 @@ const createBlog = async ({ page, title, author, url }) => {
   const blogText = `${title} by ${author}`;
   const blog = page.locator(".blog", { hasText: blogText }).first();
 
-  await blog.waitFor({ state: "visible", timeout: 10000 });
+  for (let i = 0; i < 8; i++) {
+    if (page.isClosed()) throw new Error("Page closed unexpectedly in CI");
+    try {
+      await blog.waitFor({ state: "visible", timeout: 5000 });
+      break;
+    } catch (err) {
+      await page.waitForTimeout(3000);
+    }
+  }
 
   const view = blog.getByRole("button", { name: /view/i });
   if (await view.isVisible()) {

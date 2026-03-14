@@ -1,14 +1,6 @@
 import axios from "axios";
 
-let baseUrl;
-
-if (process.env.NODE_ENV === "development") {
-  baseUrl = "http://localhost:3003/api";
-} else if (process.env.NODE_ENV === "test") {
-  baseUrl = process.env.TEST_BACKEND_URL || "http://localhost:3004/api";
-} else {
-  baseUrl = "/api";
-}
+const baseUrl = "/api/blogs";
 
 let token = null;
 
@@ -17,12 +9,12 @@ const setToken = (newToken) => {
 };
 
 const getAll = async () => {
-  const response = await fetch(`${baseUrl}/blogs`);
+  const response = await fetch(`${baseUrl}`);
   return response.json();
 };
 
 const create = async (newBlog) => {
-  const res = await fetch(`${baseUrl}/blogs`, {
+  const res = await fetch(`${baseUrl}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -34,13 +26,13 @@ const create = async (newBlog) => {
 };
 
 const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/blogs/${id}`, newObject);
+  const request = axios.put(`${baseUrl}/${id}`, newObject);
   return request.then((response) => response.data);
 };
 
 const remove = async (id) => {
   const config = { headers: { Authorization: token } };
-  const response = await axios.delete(`${baseUrl}/blogs/${id}`, config);
+  const response = await axios.delete(`${baseUrl}/${id}`, config);
   return response.data;
 };
 
